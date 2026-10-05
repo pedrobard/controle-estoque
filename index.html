@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Estoque</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="layout">
+
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Controle de Estoque</h1>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#page-dashboard" class="nav-item">Dashboard</a>
+                <a href="#page-produto" class="nav-item">Produtos</a>
+                <a href="#page-categorias" class="nav-item">Categorias</a>
+                <a href="#page-movimentacoes" class="nav-item">Movimentações</a>
+                <a href="#page-historico" class="nav-item">Histórico</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+
+            <header class="header">
+                <div>
+                    <h2>Gerenciador de Estoque</h2>
+                    <p>Controle seus produtos e movimentações de estoque.</p>
+                </div>
+            </header>
+
+
+            <section id="page-dashboard" class="section">
+
+                <div class="page-header">
+                    <div>
+                        <h2>Dashboard</h2>
+                        <p>Visão geral do seu estoque.</p>
+                    </div>
+                </div>
+
+                <section id="resumo-estoque" class="summary-section">
+
+                    <div class="summary-card">
+                        <span>Total de produtos</span>
+                        <strong id="total-produtos">0</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Total de unidades</span>
+                        <strong id="total-unidades">0</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Valor total do estoque</span>
+                        <strong id="valor-total-estoque">R$ 0,00</strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Valor potencial do estoque</span>
+                        <strong id="valor-potencial-estoque">R$ 0,00</strong>
+                    </div>
+
+                </section>
+
+            </section>
+
+
+
+            <section id="page-produto" class="section">
+
+                <div class="page-header">
+                    <div>
+                        <h2>Produtos</h2>
+                        <p>Cadastre, consulte e gerencie seus produtos.</p>
+                    </div>
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h3>Cadastrar Produto</h3>
+                    </div>
+
+                    <form id="form-cadastrar-produto">
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label for="inp-nome">Nome do Produto</label>
+                                <input type="text" id="inp-nome">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inp-categoria">Categoria do Produto</label>
+                                <select id="inp-categoria"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inp-quantidade">Quantidade inicial</label>
+                                <input type="number" id="inp-quantidade" min="0" step="0.01">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inp-custo-inicial">Custo unitário inicial</label>
+                                <input type="number" id="inp-custo-inicial" min="0" step="0.01">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inp-preco">Preço de venda padrão</label>
+                                <input type="number" id="inp-preco" min="0.01" step="0.01">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inp-estoque-minimo">Estoque mínimo</label>
+                                <input type="number" id="inp-estoque-minimo" min="0" step="0.01">
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit">Cadastrar produto</button>
+                            <button type="button" id="btn-cancelar">Cancelar</button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h3>Lista de Produtos</h3>
+                    </div>
+
+                    <div class="filters">
+                        <input type="text" id="inp-busca" placeholder="Digite o nome do produto">
+
+                        <select id="select-categoria">
+                            <option value="todas">Todas</option>
+                        </select>
+
+                        <button type="button" id="btn-estoque-baixo">Ver estoque baixo</button>
+                        <button type="button" id="btn-todos-produtos">Ver todos</button>
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Categoria</th>
+                                    <th>Quantidade</th>
+                                    <th>Custo médio</th>
+                                    <th>Valor em estoque</th>
+                                    <th>Preço de venda</th>
+                                    <th>Estoque mínimo</th>
+                                    <th>Situação</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="lista-produtos"></tbody>
+
+                        </table>
+
+                    </div>
+                </div>
+
+            </section>
+
+
+
+            <section id="page-categorias" class="section">
+
+                <div class="page-header">
+                    <div>
+                        <h2>Categorias</h2>
+                        <p>Organize seus produtos por categorias.</p>
+                    </div>
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h3>Cadastrar Categoria</h3>
+                    </div>
+
+                    <form id="form-cadastrar-categoria">
+
+                        <div class="form-group">
+                            <label for="inp-nome-categoria">Nome da categoria</label>
+                            <input type="text" id="inp-nome-categoria">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" id="btn-cadastrar-categoria">
+                                Cadastrar Categoria
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h3>Categorias cadastradas</h3>
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Categoria</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="lista-categorias"></tbody>
+
+                        </table>
+
+                    </div>
+                </div>
+
+            </section>
+
+
+
+            <section id="page-movimentacoes" class="section">
+
+                <div class="page-header">
+                    <div>
+                        <h2>Movimentações</h2>
+                        <p>Registre entradas, saídas e ajustes de estoque.</p>
+                    </div>
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h3>Movimentação de Estoque</h3>
+                    </div>
+
+                    <form id="form-movimentacao">
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label for="select-produto">Produto</label>
+                                <select id="select-produto"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inp-quantidade-movimentacao">Quantidade</label>
+                                <input type="number" id="inp-quantidade-movimentacao" min="0" step="0.01">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inp-custo-movimentacao">Valor unitário</label>
+                                <input type="number" id="inp-custo-movimentacao" min="0.01" step="0.01">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="select-tipo-movimentacao">Tipo de movimentação</label>
+                                <select id="select-tipo-movimentacao">
+                                    <option value="entrada">Entrada</option>
+                                    <option value="saida">Saída</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit">Registrar movimentação</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h3>Ajuste de Estoque</h3>
+                    </div>
+
+                    <form id="form-ajuste-estoque">
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label for="select-produto-ajuste">Produto</label>
+                                <select id="select-produto-ajuste"></select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inp-estoque-atual">Estoque atual</label>
+                                <input type="number" id="inp-estoque-atual" disabled>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inp-quantidade-ajuste">Quantidade encontrada</label>
+                                <input type="number" id="inp-quantidade-ajuste" min="0" step="0.01">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inp-motivo-ajuste">Motivo</label>
+                                <input type="text" id="inp-motivo-ajuste">
+                            </div>
+
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit">Registrar ajuste</button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+
+
+            <section id="page-historico" class="section">
+
+                <div class="page-header">
+                    <div>
+                        <h2>Histórico</h2>
+                        <p>Consulte todas as movimentações registradas.</p>
+                    </div>
+                </div>
+
+                <div class="panel">
+
+                    <div class="filters">
+
+                        <div class="form-group">
+                            <label for="select-produto-historico">Produto</label>
+                            <select id="select-produto-historico"></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="select-historico">Tipo</label>
+                            <select id="select-historico"></select>
+                        </div>
+
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Produto</th>
+                                    <th>Tipo</th>
+                                    <th>Resumo</th>
+                                    <th>Quantidade</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="lista-historico"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+
+
+    <div id="overlay-detalhes" class="overlay-modal">
+
+        <div class="modal-historico">
+
+            <div class="modal-header">
+                <h2>Detalhes da movimentação</h2>
+                <button id="btn-fechar-detalhes">Fechar</button>
+            </div>
+
+            <div id="conteudo-detalhes"></div>
+
+        </div>
+
+    </div>
+
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>
