@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Estoque</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
@@ -24,62 +25,172 @@
                 <a href="#page-movimentacoes" class="nav-item">Movimentações</a>
                 <a href="#page-historico" class="nav-item">Histórico</a>
             </nav>
+
+            <button type="button" id="btn-tema" aria-label="Alternar tema">
+                <i id="icone-tema" class="fa-solid fa-moon"></i>
+            </button>
         </aside>
 
         <main class="main-content">
 
             <header class="header">
-                <div>
-                    <h2>Gerenciador de Estoque</h2>
-                    <p>Controle seus produtos e movimentações de estoque.</p>
-                </div>
+
             </header>
 
 
             <section id="page-dashboard" class="section">
 
                 <div class="page-header">
-                    <div>
-                        <h2>Dashboard</h2>
-                        <p>Visão geral do seu estoque.</p>
-                    </div>
+                    
                 </div>
 
                 <section id="resumo-estoque" class="summary-section">
 
-                    <div class="summary-card">
-                        <span>Total de produtos</span>
+                    <article class="summary-card">
+                        <div class="summary-card-header">
+                            <span>Total de produtos</span>
+                            <i class="fa-solid fa-box-open" aria-hidden="true"></i>
+                        </div>
+
                         <strong id="total-produtos">0</strong>
-                    </div>
+                    </article>
 
-                    <div class="summary-card">
-                        <span>Total de unidades</span>
+                    <article class="summary-card">
+                        <div class="summary-card-header">
+                            <span>Unidades em estoque</span>
+                            <i class="fa-solid fa-cubes" aria-hidden="true"></i>
+                        </div>
                         <strong id="total-unidades">0</strong>
-                    </div>
 
-                    <div class="summary-card">
-                        <span>Valor total do estoque</span>
+                    </article>
+
+                    <article class="summary-card">
+                        <div class="summary-card-header">
+                            <span>Valor investido</span>
+                            <i class="fa-solid fa-wallet" aria-hidden="true"></i>
+                        </div>
                         <strong id="valor-total-estoque">R$ 0,00</strong>
-                    </div>
 
-                    <div class="summary-card">
-                        <span>Valor potencial do estoque</span>
+                    </article>
+
+                    <article class="summary-card">
+                        <div class="summary-card-header">
+                            <span>Potencial de venda</span>
+                            <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+                        </div>
                         <strong id="valor-potencial-estoque">R$ 0,00</strong>
-                    </div>
 
+                    </article>
+
+                    <article class="summary-card">
+                        <div class="summary-card-header">
+                            <span>Lucro realizado no mês</span>
+                            <i class="fa-solid fa-sack-dollar" aria-hidden="true"></i>
+                        </div>
+                        <strong id="lucro-realizado-mes">R$ 0,00</strong>
+
+                    </article>
                 </section>
 
-            </section>
+                <div class="dashboard-grid">
 
+
+                    <div class="dashboard-charts">
+
+                        <!-- Gráfico de entradas e saídas  -->
+                        <div class="panel dashboard-chart">
+
+                            <div class="panel-header">
+                                <div>
+                                    <h3>Entradas e saídas</h3>
+                                    <p>Movimentações de estoque ao longo do tempo.</p>
+                                </div>
+                            </div>
+
+                            <div class="chart-container">
+                                <canvas id="grafico-movimentacoes"></canvas>
+                            </div>
+
+                        </div>
+
+                        <!-- Gráfico de rosca  -->
+                        <div class="panel dashboard-donut">
+
+                            <div class="panel-header">
+                                <div>
+                                    <h3>Estoque por categoria</h3>
+                                    <p>Distribuição do valor investido.</p>
+                                </div>
+                            </div>
+
+                            <div class="chart-container">
+                                <canvas id="grafico-estoque-categorias"></canvas>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Segunda linha: estoque baixo e movimentações recentes -->
+                    <div class="dashboard-bottom">
+
+                        <!-- Estoque baixo  -->
+                        <div class="panel dashboard-low-stock">
+
+                            <div class="panel-header">
+                                <div>
+                                    <h3>Estoque baixo</h3>
+                                    <p>Produtos que precisam de atenção.</p>
+                                </div>
+                            </div>
+
+                            <div id="lista-estoque-baixo">
+                                <!-- Produtos com estoque baixo serão inseridos aqui -->
+                            </div>
+
+                        </div>
+
+                        <!-- Movimentações recentes  -->
+                        <div class="panel dashboard-recent-movements">
+
+                            <div class="panel-header">
+                                <div>
+                                    <h3>Movimentações recentes</h3>
+                                    <p>Últimas movimentações realizadas no estoque.</p>
+                                </div>
+                            </div>
+                            <div class="recent-movements-container">
+                                <table class="recent-movements-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Produto</th>
+                                            <th>Tipo</th>
+                                            <th>Quantidade</th>
+                                            <th>Data</th>
+                                            <th>Ação</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="lista-movimentacoes-recentes">
+                                        <!-- Movimentações recentes serão inseridas aqui -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
 
 
             <section id="page-produto" class="section">
 
                 <div class="page-header">
-                    <div>
-                        <h2>Produtos</h2>
-                        <p>Cadastre, consulte e gerencie seus produtos.</p>
-                    </div>
+                    
                 </div>
 
                 <div class="panel">
@@ -94,17 +205,17 @@
 
                             <div class="form-group">
                                 <label for="inp-nome">Nome do Produto</label>
-                                <input type="text" id="inp-nome">
+                                <input type="text" id="inp-nome" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="inp-categoria">Categoria do Produto</label>
-                                <select id="inp-categoria"></select>
+                                <select id="inp-categoria" required></select>
                             </div>
 
                             <div class="form-group">
                                 <label for="inp-quantidade">Quantidade inicial</label>
-                                <input type="number" id="inp-quantidade" min="0" step="0.01">
+                                <input type="number" id="inp-quantidade" min="0" step="1" required>
                             </div>
 
                             <div class="form-group">
@@ -114,12 +225,12 @@
 
                             <div class="form-group">
                                 <label for="inp-preco">Preço de venda padrão</label>
-                                <input type="number" id="inp-preco" min="0.01" step="0.01">
+                                <input type="number" id="inp-preco" min="0.01" step="0.01" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="inp-estoque-minimo">Estoque mínimo</label>
-                                <input type="number" id="inp-estoque-minimo" min="0" step="0.01">
+                                <input type="number" id="inp-estoque-minimo" min="0" step="1" required>
                             </div>
 
                         </div>
@@ -181,10 +292,7 @@
             <section id="page-categorias" class="section">
 
                 <div class="page-header">
-                    <div>
-                        <h2>Categorias</h2>
-                        <p>Organize seus produtos por categorias.</p>
-                    </div>
+                    
                 </div>
 
                 <div class="panel">
@@ -240,10 +348,7 @@
             <section id="page-movimentacoes" class="section">
 
                 <div class="page-header">
-                    <div>
-                        <h2>Movimentações</h2>
-                        <p>Registre entradas, saídas e ajustes de estoque.</p>
-                    </div>
+                    
                 </div>
 
                 <div class="panel">
@@ -263,7 +368,7 @@
 
                             <div class="form-group">
                                 <label for="inp-quantidade-movimentacao">Quantidade</label>
-                                <input type="number" id="inp-quantidade-movimentacao" min="0" step="0.01">
+                                <input type="number" id="inp-quantidade-movimentacao" min="1" step="1">
                             </div>
 
                             <div class="form-group">
@@ -278,6 +383,7 @@
                                     <option value="saida">Saída</option>
                                 </select>
                             </div>
+
 
                         </div>
 
@@ -311,7 +417,7 @@
 
                             <div class="form-group">
                                 <label for="inp-quantidade-ajuste">Quantidade encontrada</label>
-                                <input type="number" id="inp-quantidade-ajuste" min="0" step="0.01">
+                                <input type="number" id="inp-quantidade-ajuste" min="0" step="1" required>
                             </div>
 
                             <div class="form-group">
@@ -319,6 +425,10 @@
                                 <input type="text" id="inp-motivo-ajuste">
                             </div>
 
+                            <div class="form-group" id="grupo-custo-unitario-ajuste" hidden>
+                                <label for="inp-custo-unitario-ajuste">Custo unitário das unidades adicionadas</label>
+                                <input type="number" id="inp-custo-unitario-ajuste" min="0.01" step="0.01">
+                            </div>
                         </div>
 
                         <div class="form-actions">
@@ -336,10 +446,7 @@
             <section id="page-historico" class="section">
 
                 <div class="page-header">
-                    <div>
-                        <h2>Histórico</h2>
-                        <p>Consulte todas as movimentações registradas.</p>
-                    </div>
+                    
                 </div>
 
                 <div class="panel">
@@ -352,8 +459,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="select-historico">Tipo</label>
-                            <select id="select-historico"></select>
+                            <label for="select-tipo-historico">Tipo</label>
+                            <select id="select-tipo-historico"></select>
                         </div>
 
                     </div>
@@ -403,7 +510,8 @@
 
     </div>
 
-    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="./js/script.js"></script>
 
 </body>
 
