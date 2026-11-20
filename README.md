@@ -17,6 +17,23 @@ Embora tenha surgido de uma necessidade pessoal, o sistema foi desenvolvido para
 - **Ajustes de estoque:** permite corrigir quantidades, registrando o motivo de cada ajuste.
 - **Histórico:** reúne as movimentações realizadas e permite consultar seus detalhes e realizar estornos quando as regras do sistema permitem.
 
+## Capturas de tela
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Produtos
+![Produtos](screenshots/produtos.png)
+
+### Categorias
+![Categorias](screenshots/categorias.png)
+
+### Movimentações
+![Movimentações](screenshots/movimentacoes.png)
+
+### Histórico
+![Histórico](screenshots/historico.png)
+
 ## Tecnologias utilizadas
 
 **Frontend**
