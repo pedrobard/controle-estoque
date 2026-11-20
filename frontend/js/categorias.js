@@ -191,6 +191,7 @@ function renderizarCategorias() {
         tdNome.textContent = categoria.nome;
 
         const tdAcoes = document.createElement("td");
+        tdAcoes.classList.add("acoes");
 
         const btnEditar = document.createElement("button");
         btnEditar.type = "button";
