@@ -207,7 +207,7 @@ export async function ajustar(dados) {
             idProduto: idProdutoNum, quantidade: Math.abs(diferenca),
             quantidadeAnterior: quantidadeAtual, quantidadeFinal: quantidadeFisicaNum, diferenca, motivo: motivoFinal,
             custoMedioAposMovimentacao: custoMedioFinal, custoUnitario: custoUnitarioAjuste,
-            custoTotalMovimentacao: custoUnitarioAjuste === null ? null : Number((diferenca * custoUnitarioAjuste)).toFixed(2)
+            custoTotalMovimentacao: custoUnitarioAjuste === null ? null : diferenca * custoUnitarioAjuste
         }, client);
 
         if (!movimentacao) {

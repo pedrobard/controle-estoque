@@ -15,30 +15,62 @@ O backend está dividido nas seguintes pastas:
 ```text
 backend/
 ├── controllers/
+│   ├── ajustes-estoque.controller.js
+│   ├── auth.controller.js
+│   ├── categorias.controller.js
+│   ├── movimentacoes.controller.js
+│   └── produtos.controller.js
 ├── database/
+│   ├── migrations/
+│   │   ├── 001_criacao_tabela_administradores.sql
+│   │   └── 002_criacao_tabela_sessoes.sql
 │   └── schema.sql
 ├── middlewares/
+│   ├── rate-limit-login.middleware.js
+│   ├── rate-limit-totp.middleware.js
+│   ├── tratar-erros-json.js
+│   ├── validar-corpo-requisicao.middleware.js
+│   └── verificar-autenticacao.middleware.js
 ├── repositories/
+│   ├── administradores.repository.js
+│   ├── categorias.repository.js
+│   ├── movimentacoes.repository.js
+│   └── produtos.repository.js
 ├── routes/
+│   ├── ajustes-estoque.routes.js
+│   ├── auth.routes.js
+│   ├── categorias.routes.js
+│   ├── movimentacoes.routes.js
+│   └── produtos.routes.js
+├── scripts/
+│   └── criar-administrador-inicial.js
 ├── services/
+│   ├── ajustes-estoque.service.js
+│   ├── auth.service.js
+│   ├── categorias.service.js
+│   ├── movimentacoes.service.js
+│   └── produtos.service.js
 ├── utils/
+│   └── transacoes.js
 ├── .env.example
 ├── db.js
-├── server.js
-└── package.json
+├── package-lock.json
+├── package.json
+└── server.js
 ```
 
 Cada pasta possui uma responsabilidade específica:
 
 - **controllers:** recebem os dados das requisições, chamam os serviços correspondentes e definem as respostas HTTP.
-- **database:** contém o arquivo com a estrutura do banco de dados PostgreSQL.
-- **middlewares:** executam verificações e tratamentos antes ou durante o processamento das requisições.
+- **database:** contém o schema do PostgreSQL e as migrations utilizadas para criar as tabelas de administradores e sessões.
+- **middlewares:** executam verificações e tratamentos antes ou durante o processamento das requisições, incluindo validação, autenticação e limitação de tentativas.
 - **repositories:** concentram as consultas SQL e as operações de acesso ao banco de dados.
-- **routes:** definem os caminhos da API e direcionam as requisições para os controllers.
-- **services:** concentram as regras de negócio, realizam validações e coordenam as operações do sistema.
+- **routes:** definem os caminhos da API, aplicam os middlewares necessários e direcionam as requisições para os controllers.
+- **scripts:** reúne scripts administrativos, como a criação do primeiro administrador.
+- **services:** concentram as regras de negócio, realizam validações e coordenam as operações do sistema, incluindo a autenticação.
 - **utils:** reúne funções auxiliares utilizadas em diferentes partes do backend.
 
-Os arquivos `server.js` e `db.js` também possuem funções importantes: o primeiro configura e inicia o servidor Express, enquanto o segundo configura a conexão com o PostgreSQL.
+Os arquivos `server.js` e `db.js` também possuem funções importantes: o primeiro configura os middlewares globais, as sessões, as rotas e inicia o servidor Express; o segundo configura o pool de conexões com o PostgreSQL.
 
 ## 3. Fluxo de uma requisição
 
@@ -49,14 +81,15 @@ Requisição HTTP
       |
       v
 Middlewares globais
-(cors, express.json)
+(CORS, express.json, sessão)
       |
       v
     Routes
       |
       v
-Validação do corpo
-(quando aplicável)
+Middlewares da rota
+(validação, autenticação e rate limit,
+conforme o endpoint)
       |
       v
  Controllers
@@ -70,6 +103,10 @@ Validação do corpo
       v
  PostgreSQL
 ```
+
+As rotas de autenticação (`/auth`) permitem iniciar e concluir o login, verificar a sessão e realizar logout. Já as rotas de categorias, produtos, movimentações e ajustes de estoque exigem uma sessão autenticada: o middleware `verificarAutenticacao` bloqueia a requisição antes que ela chegue ao controller quando não existe uma sessão válida.
+
+O Express também utiliza `express-session` para gerenciar as sessões. Os dados das sessões são armazenados no PostgreSQL por meio de `connect-pg-simple`, usando a tabela `sessoes`.
 
 O resultado percorre o caminho inverso até chegar ao cliente.
 
@@ -90,9 +127,20 @@ Os middlewares executam verificações antes que determinadas requisições cheg
 O projeto utiliza:
 
 - **validar-corpo-requisicao.middleware.js:** verifica se o corpo da requisição possui um formato válido, rejeitando valores ausentes, nulos, arrays ou tipos que não sejam objetos.
+- **verificar-autenticacao.middleware.js:** verifica se a sessão contém os dados de autenticação esperados e se ainda está dentro do prazo de validade. É aplicado às rotas protegidas de categorias, produtos, movimentações e ajustes de estoque.
+- **rate-limit-login.middleware.js:** limita as tentativas de login a cinco dentro de uma janela de quinze minutos, desconsiderando as requisições bem-sucedidas.
+- **rate-limit-totp.middleware.js:** limita as tentativas de verificação TOTP a cinco dentro de uma janela de cinco minutos, também desconsiderando as requisições bem-sucedidas.
 - **tratar-erros-json.js:** identifica erros de interpretação de JSON e retorna uma resposta adequada quando o corpo enviado contém JSON inválido.
 
-Além desses middlewares, o Express utiliza `express.json()` para interpretar os corpos das requisições no formato JSON.
+Além desses middlewares, o Express utiliza `express.json()` para interpretar os corpos das requisições no formato JSON e `express-session` para gerenciar as sessões dos usuários. O armazenamento das sessões é feito no PostgreSQL por meio de `connect-pg-simple`.
+
+### Autenticação e sessões
+
+A autenticação é realizada em duas etapas. Primeiro, o usuário envia nome de usuário e senha pela rota `/auth/login`. Quando as credenciais são válidas, o backend cria uma sessão temporária para a etapa de verificação TOTP, com duração de cinco minutos. Em seguida, o código é validado pela rota `/auth/totp`.
+
+Após a validação do TOTP, o backend regenera a sessão e cria uma sessão autenticada, com duração de cinco horas. As informações são armazenadas na tabela `sessoes` do PostgreSQL. Nas requisições às rotas protegidas, `verificarAutenticacao` confirma a autenticação e a validade da sessão antes de liberar o acesso.
+
+A rota `/auth/logout` encerra a sessão e remove o cookie correspondente. A rota `/auth/verificar` permite ao frontend consultar se a sessão está autenticada.
 
 ### Controllers
 

@@ -1,6 +1,6 @@
 import { produtos } from "./produtos.js";
 import { categorias } from "./categorias.js";
-import { apiUrl } from "./api.js";
+import { apiFetch } from "./api.js";
 
 
 const formMovimentacao = document.querySelector("#form-movimentacao");
@@ -49,7 +49,7 @@ async function registrarMovimentacao() {
 
     try {
 
-        const resposta = await fetch(apiUrl("/movimentacoes"), {
+        const resposta = await apiFetch("/movimentacoes", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -143,7 +143,7 @@ async function registrarAjusteEstoque() {
     }
 
     try {
-        const resposta = await fetch(apiUrl("/ajustes-estoque"), {
+        const resposta = await apiFetch("/ajustes-estoque", {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({

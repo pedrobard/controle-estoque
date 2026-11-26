@@ -1,4 +1,4 @@
-import { apiUrl } from "./api.js";
+import { apiFetch } from "./api.js";
 
 const formCadastrarCategoria = document.querySelector("#form-cadastrar-categoria");
 const inpNomeCategoria = document.querySelector("#inp-nome-categoria");
@@ -12,7 +12,7 @@ let idCategoriaEditando = null;
 
 export async function carregarCategorias() {
     try {
-        const resposta = await fetch(apiUrl("/categorias"));
+        const resposta = await apiFetch("/categorias");
 
         const dados = await resposta.json();
 
@@ -45,7 +45,7 @@ async function cadastrarCategoria() {
         }
 
         try {
-            const resposta = await fetch(apiUrl("/categorias"), {
+            const resposta = await apiFetch("/categorias", {
                 method: "POST",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({ nome: nomeCategoria })
@@ -86,7 +86,7 @@ async function cadastrarCategoria() {
             return;
         }
         try {
-            const resposta = await fetch(apiUrl(`/categorias/${idCategoriaEditando}`), {
+            const resposta = await apiFetch(`/categorias/${idCategoriaEditando}`, {
                 method: "PATCH",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({ nome: nomeCategoria })
@@ -129,7 +129,7 @@ export async function removerCategoria(id) {
         return;
     }
     try {
-        const resposta = await fetch(apiUrl(`/categorias/${id}`), {
+        const resposta = await apiFetch(`/categorias/${id}`, {
             method: "DELETE",
         })
         const dados = await resposta.json();

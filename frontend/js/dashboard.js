@@ -61,7 +61,12 @@ export function calcularResumo() {
 
     totalProdutos.textContent = produtosTotal;
     totalUnidades.textContent = unidadesTotal;
-    valorTotalEstoque.textContent = formatadorMoeda(valorEstoque);
+    valorTotalEstoque.textContent = new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(valorEstoque);
     valorPotencialEstoque.textContent = formatadorMoeda(valorPotencialVenda);
     lucroRealizadoMes.textContent = formatadorMoeda(calcularLucroRealizadoNoMes());
 

@@ -10,8 +10,156 @@
 </head>
 
 <body>
+    <div id="area-autenticacao">
 
-    <div class="layout">
+        <aside class="auth-sidebar">
+            <div class="auth-identidade">
+                <h1>Gestão de estoque</h1>
+                <span>PAINEL ADMINISTRATIVO</span>
+            </div>
+
+            <div class="auth-sidebar-corpo">
+                <div class="auth-selo">
+                    <span>ACESSO RESTRITO</span>
+                </div>
+
+                <h2>Seu estoque. Sob controle.</h2>
+                <p>Produtos, movimentações e resultados. Tudo começa com um acesso seguro.</p>
+            </div>
+            <div class="auth-progresso">
+                <div class="auth-etapa">
+                    <span data-etapa="1" class=" auth-ativo">01</span>
+                    <span class="auth-etapa-titulo">Identificação</span>
+                    <p>Entre com usuário e senha</p>
+                </div>
+
+                <div class="auth-etapa">
+                    <span data-etapa="2" class="auth-pendente">02</span>
+                    <span class="auth-etapa-titulo">Verificação em duas etapas</span>
+                    <p>Confirme com seu app autenticador</p>
+                </div>
+            </div>
+
+        </aside>
+
+        <section id="tela-login">
+
+            <main class="auth-conteudo">
+                <div class="auth-cabecalho">
+                    <span>ACESSO AO SISTEMA</span>
+                    <span>Etapa 1 de 2</span>
+                </div>
+
+                <div class="auth-corpo">
+
+                    <div class="auth-apresentacao">
+                        <h2>Acesse seu painel</h2>
+                        <p>Entre com suas credenciais para continuar.</p>
+                    </div>
+
+
+                    <form id="form-login">
+
+                        <div class="auth-campo">
+                            <label for="nome-usuario">Nome de usuário</label>
+                            <input type="text" id="nome-usuario" name="nomeUsuario"
+                                placeholder="Digite seu nome de usuário" autocomplete="username" required>
+                        </div>
+
+                        <div class="auth-campo">
+                            <label for="senha">Senha</label>
+
+                            <div class="auth-senha-container">
+                                <input type="password" id="senha" name="senha" placeholder="Digite sua senha"
+                                    autocomplete="current-password" required>
+
+                                <button type="button" id="btn-mostrar-senha">Mostrar</button>
+                            </div>
+
+                        </div>
+
+                        <button type="submit" id="btn-continuar">Continuar</button>
+
+                    </form>
+
+                    <p class="auth-aviso">Na próxima etapa, confirme seu código TOTP.</p>
+                    <hr>
+
+                    <p class="auth-info-seguranca">Protegido por autenticação em duas etapas.</p>
+
+
+                </div>
+
+
+                <footer class="auth-rodape">
+                    <p>Gestão de estoque · Área privada</p>
+                </footer>
+            </main>
+
+
+        </section>
+
+        <section id="tela-totp" hidden>
+
+            <main class="auth-conteudo">
+                <div class="auth-cabecalho">
+                    <span>ACESSO AO SISTEMA</span>
+                    <span>Etapa 2 de 2</span>
+                </div>
+
+                <div class="auth-corpo">
+
+                    <div class="auth-apresentacao-totp">
+                        <h2>Verificação em duas etapas</h2>
+                        <p>Informe o código de 6 dígitos do seu aplicativo autenticador.</p>
+                    </div>
+
+                    <form id="form-totp">
+
+
+                        <div class="auth-campo auth-campo-totp">
+                            <label for="codigo-totp">Código de autenticação</label>
+
+                            <div class="totp-input-container">
+                                <input type="text" id="codigo-totp" name="codigoTotp" inputmode="numeric"
+                                    autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required>
+
+                                <div class="totp-quadradinhos" aria-hidden="true">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <button type="submit" id="btn-verificar-totp">Verificar código</button>
+
+                    </form>
+
+
+                    <hr>
+
+                    <p class="auth-info-seguranca">Protegido por autenticação em duas etapas.</p>
+
+
+                </div>
+
+
+                <footer class="auth-rodape">
+                    <p>Gestão de estoque · Área privada</p>
+                </footer>
+            </main>
+
+
+        </section>
+
+    </div>
+
+    <div class="layout" hidden>
 
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -26,9 +174,21 @@
                 <a href="#page-historico" class="nav-item">Histórico</a>
             </nav>
 
-            <button type="button" id="btn-tema" aria-label="Alternar tema">
-                <i id="icone-tema" class="fa-solid fa-moon"></i>
-            </button>
+            <div class="sidebar-footer">
+
+                <button type="button" id="btn-tema" aria-label="Alternar tema">
+                    <i id="icone-tema" class="fa-solid fa-moon"></i>
+                </button>
+
+                <div class="nav-usuario">
+                    <i class="fa-solid fa-user" id="icone-usuario" aria-hidden="true"></i>
+
+                    <button type="button" id="btn-logout" aria-label="Sair" title="Sair">
+                        <i id="icone-logout" class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+            </div>
         </aside>
 
         <main class="main-content">
@@ -41,7 +201,7 @@
             <section id="page-dashboard" class="section">
 
                 <div class="page-header">
-                    
+
                 </div>
 
                 <section id="resumo-estoque" class="summary-section">
@@ -190,7 +350,7 @@
             <section id="page-produto" class="section">
 
                 <div class="page-header">
-                    
+
                 </div>
 
                 <div class="panel">
@@ -292,7 +452,7 @@
             <section id="page-categorias" class="section">
 
                 <div class="page-header">
-                    
+
                 </div>
 
                 <div class="panel">
@@ -348,7 +508,7 @@
             <section id="page-movimentacoes" class="section">
 
                 <div class="page-header">
-                    
+
                 </div>
 
                 <div class="panel">
@@ -446,7 +606,7 @@
             <section id="page-historico" class="section">
 
                 <div class="page-header">
-                    
+
                 </div>
 
                 <div class="panel">

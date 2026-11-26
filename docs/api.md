@@ -11,6 +11,7 @@ As requisições que enviam informações devem utilizar o formato JSON, com o c
 ```http
 Content-Type: application/json
 ```
+Todas as rotas de categorias, produtos, movimentações e ajustes de estoque exigem uma sessão autenticada. Requisições realizadas sem uma sessão válida são rejeitadas com o código HTTP `401 Unauthorized`.
 
 ### Endereço local
 
@@ -506,9 +507,13 @@ A API utiliza códigos HTTP para indicar o resultado das operações.
 | `200` | OK | Consulta, edição, alteração de status ou exclusão realizada com sucesso. |
 | `201` | Created | Novo registro ou operação de movimentação criada com sucesso. |
 | `400` | Bad Request | Dados enviados inválidos ou parâmetros incorretos. |
+| `401` | Unauthorized | Requisição sem autenticação válida. |
+| `403` | Forbidden | Autenticação de dois fatores ainda não configurada. |
 | `404` | Not Found | Registro solicitado não encontrado. |
 | `409` | Conflict | Operação incompatível com o estado atual dos dados ou com uma regra do sistema. |
+| `429` | Too Many Requests | Limite de tentativas de login ou verificação TOTP excedido. |
 | `500` | Internal Server Error | Falha interna durante o processamento da requisição. |
+
 
 Os códigos efetivamente utilizados dependem do endpoint e da situação encontrada durante a operação.
 
@@ -552,3 +557,189 @@ Além disso, os serviços realizam validações específicas de acordo com as re
 Quando o JSON enviado não pode ser interpretado, o middleware de tratamento de erros retorna uma resposta apropriada.
 
 Essas verificações ajudam a impedir que dados inválidos sejam processados pelo sistema.
+
+## 9. Autenticação
+
+A API possui endpoints específicos para controlar o acesso ao sistema. A autenticação é realizada em duas etapas: usuário e senha, seguidos da verificação de um código TOTP.
+
+Todas as rotas de autenticação utilizam o prefixo `/auth`.
+
+| Método | Endpoint | Descrição |
+|---|---|---|
+| POST | `/auth/login` | Verifica o usuário e a senha. |
+| POST | `/auth/totp` | Valida o código TOTP. |
+| GET | `/auth/verificar` | Verifica se existe uma sessão autenticada. |
+| POST | `/auth/logout` | Encerra a sessão. |
+
+### 9.1. Login
+
+**Requisição**
+
+```http
+POST /auth/login
+```
+
+**Corpo da requisição**
+
+```json
+{
+  "nomeUsuario": "administrador",
+  "senha": "sua_senha"
+}
+```
+
+O nome de usuário é normalizado antes da consulta, removendo espaços nas extremidades e convertendo os caracteres para letras minúsculas.
+
+**Resposta de sucesso — 200**
+
+```json
+{
+  "mensagem": "Credenciais verificadas com sucesso.",
+  "etapa": "totp"
+}
+```
+
+Essa etapa verifica as credenciais e inicia uma sessão temporária de autenticação, com duração de 5 minutos. A autenticação ainda não está concluída.
+
+**Possíveis erros**
+
+- `401`: usuário ou senha inválidos.
+- `403`: autenticação de dois fatores ainda não foi configurada.
+- `429`: limite de tentativas de login excedido.
+- `500`: erro interno do servidor.
+
+### 9.2. Verificar código TOTP
+
+**Requisição**
+
+```http
+POST /auth/totp
+```
+
+**Corpo da requisição**
+
+```json
+{
+  "codigo": "123456"
+}
+```
+
+O código enviado é validado utilizando o segredo TOTP armazenado de forma criptografada.
+
+**Resposta de sucesso — 200**
+
+```json
+{
+  "mensagem": "Autenticação concluída com sucesso."
+}
+```
+
+Após a validação, a sessão temporária é substituída por uma sessão autenticada, com duração de 5 horas.
+
+**Possíveis erros**
+
+- `401`: sessão temporária inválida ou expirada, ou código TOTP inválido ou expirado.
+- `429`: limite de tentativas de verificação excedido.
+- `500`: erro interno do servidor ou falha na configuração da chave de criptografia.
+
+### 9.3. Verificar sessão
+
+**Requisição**
+
+```http
+GET /auth/verificar
+```
+
+Essa rota verifica se o usuário possui uma sessão autenticada válida. É necessário enviar o cookie de sessão.
+
+**Resposta de sucesso — 200**
+
+```json
+{
+  "autenticado": true
+}
+```
+
+**Possíveis erros — 401**
+
+Quando não existe uma sessão autenticada:
+
+```json
+{
+   "erro": "Autenticação necessária."
+}
+```
+
+Quando a sessão ultrapassa o limite de duração:
+
+```json
+{
+  "erro": "Sua sessão expirou. Faça login novamente."
+}
+```
+
+### 9.4. Encerrar sessão
+
+**Requisição**
+
+```http
+POST /auth/logout
+```
+
+Encerra a sessão atual e limpa o cookie de autenticação.
+
+**Resposta de sucesso — 200**
+
+```json
+{
+  "mensagem": "Logout realizado com sucesso."
+}
+```
+
+**Possível erro**
+
+- `500`: não foi possível encerrar a sessão.
+
+### 9.5. Limitação de tentativas
+
+As rotas de login e verificação TOTP possuem limites de tentativas para reduzir tentativas repetidas de acesso não autorizado.
+
+| Operação | Limite | Período |
+|---|---:|---:|
+| Login | 5 tentativas | 15 minutos |
+| Verificação TOTP | 5 tentativas | 5 minutos |
+
+Requisições bem-sucedidas não são contabilizadas nesses limites.
+
+Quando o limite é excedido, a API retorna HTTP `429 (Too Many Requests)`.
+
+**Login:**
+
+```json
+{
+  "erro": "Muitas tentativas de login. Tente novamente mais tarde."
+}
+```
+
+**Verificação TOTP:**
+
+```json
+{
+  "erro": "Muitas tentativas de verificação. Tente novamente mais tarde."
+}
+```
+
+### 9.6. Sessões e envio de credenciais
+
+A autenticação utiliza sessões armazenadas no PostgreSQL, por meio da tabela `sessoes`.
+
+O cookie de sessão possui as seguintes configurações:
+
+- `httpOnly`: impede o acesso ao cookie por JavaScript no navegador.
+- `secure`: habilitado quando o ambiente está configurado como produção.
+- `sameSite`: configurado como `lax`.
+- Duração: 5 minutos durante a autenticação temporária e 5 horas após a autenticação completa.
+
+As requisições autenticadas devem preservar e enviar o cookie de sessão para que o servidor consiga identificar o usuário.
+
+Como a API utiliza CORS com credenciais habilitadas, o frontend deve permitir o envio de cookies nas requisições.

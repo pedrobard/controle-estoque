@@ -100,7 +100,7 @@ export async function cadastrar(dados) {
         throw erro;
     }
 
-    const valorUnitarioNum = Number(Number(valorUnitario).toFixed(4));
+   const valorUnitarioNum = Number(valorUnitario);
 
     if (!Number.isFinite(valorUnitarioNum) || valorUnitarioNum <= 0) {
         const erro = new Error("O valor unitário deve ser maior que zero.");
@@ -157,7 +157,7 @@ export async function cadastrar(dados) {
 
             const novaQuantidade = quantidadeAnterior + quantidadeNum;
 
-            const novoCustoMedio = Number((((quantidadeAnterior * custoMedioAtual) + custoTotalMovimentacao) / novaQuantidade).toFixed(4));
+            const novoCustoMedio = ((quantidadeAnterior * custoMedioAtual) + custoTotalMovimentacao) / novaQuantidade;
 
             etapa = "atualizar estoque do produto";
 
@@ -426,7 +426,7 @@ export async function estornar(id, motivo) {
                     throw erro;
                 }
 
-                custoMedioReconstruido = Number((((quantidadeReconstruida * custoMedioReconstruido) + (quantidadeEntrada * custoUnitarioEntrada)) / quantidadeFinal).toFixed(4));
+                custoMedioReconstruido = ((quantidadeReconstruida * custoMedioReconstruido) + (quantidadeEntrada * custoUnitarioEntrada)) / quantidadeFinal;
 
                 quantidadeReconstruida = quantidadeFinal;
 
@@ -476,7 +476,7 @@ export async function estornar(id, motivo) {
                         throw erro;
                     }
 
-                    custoMedioReconstruido = Number((((quantidadeAnteriorAjuste * custoMedioReconstruido) + (diferenca * custoUnitarioAjuste)) / quantidadeReconstruida).toFixed(4));
+                    custoMedioReconstruido = ((quantidadeAnteriorAjuste * custoMedioReconstruido) + (diferenca * custoUnitarioAjuste)) / quantidadeReconstruida;
                 }
 
                 // Estoque zerado não possui custo médio

@@ -191,10 +191,6 @@ select:disabled {
 
 /* estrutura principal */
 
-.layout {
-    display: flex;
-    min-height: 100vh;
-}
 
 .sidebar {
     position: fixed;
@@ -286,8 +282,8 @@ select:disabled {
 .header {
     display: flex;
     align-items: center;
-   
-    
+
+
 }
 
 .header h2 {
@@ -303,6 +299,14 @@ select:disabled {
     font-size: 14px;
 }
 
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: auto;
+}
+
 #btn-tema {
     display: flex;
     align-items: center;
@@ -311,7 +315,6 @@ select:disabled {
     min-width: 42px;
     height: 42px;
     min-height: 42px;
-    margin-top: auto;
     align-self: flex-start;
     padding: 0;
     border: 1px solid var(--sidebar-line);
@@ -325,6 +328,47 @@ select:disabled {
     background-color: var(--sidebar-active);
     border-color: var(--sidebar-accent);
     color: #ffffff;
+}
+
+.nav-usuario {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#icone-usuario {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--sidebar-line);
+    border-radius: 50%;
+    background-color: var(--sidebar-hover);
+    color: var(--sidebar-text);
+    font-size: 16px;
+}
+
+#btn-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    min-height: 42px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    background-color: transparent;
+    color: var(--danger);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#btn-logout:hover {
+    background-color: rgba(180, 35, 24, 0.12);
+    border-color: rgba(180, 35, 24, 0.25);
 }
 
 .section {
@@ -860,15 +904,6 @@ tbody td:first-child {
     height: 320px;
 }
 
-#tipo-grafico {
-    width: auto;
-    min-width: 100px;
-    padding: 6px 10px;
-    font-size: 13px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
 /* painel de estoque baixo */
 #lista-estoque-baixo {
     display: flex;
@@ -969,7 +1004,7 @@ tbody td:first-child {
 
 .recent-movements-table td {
     padding: 14px;
-    color: var(--primary-text);
+    color: var(--main-text);
     font-size: 13px;
     border-bottom: 1px solid var(--border);
 }
@@ -1014,6 +1049,411 @@ tbody td:first-child {
     color: var(--card-purple);
 }
 
+
+
+/* AUTENTICAÇÃO */
+
+#area-autenticacao {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    min-height: 100vh;
+    background-color: var(--page-bg);
+}
+
+#tela-login,
+#tela-totp {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+#tela-login[hidden],
+#tela-totp[hidden],
+.layout[hidden],
+#area-autenticacao[hidden] {
+    display: none;
+}
+
+
+/* Painel lateral */
+
+.auth-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 48px;
+    background-color: var(--sidebar);
+    color: var(--sidebar-text);
+}
+
+/* Identidade */
+
+.auth-identidade h1 {
+    margin-bottom: 4px;
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.auth-identidade span {
+    color: var(--sidebar-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Conteúdo */
+
+.auth-selo {
+    margin-bottom: 12px;
+    color: var(--sidebar-accent);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.auth-selo span {
+    padding: 6px;
+    border: 1px solid;
+    border-color: var(--sidebar-accent);
+    border-radius: 16px;
+}
+
+.auth-sidebar-corpo h2 {
+    max-width: 350px;
+    margin-bottom: 6px;
+    color: #ffffff;
+    font-size: 50px;
+    font-weight: 400;
+}
+
+.auth-sidebar-corpo p {
+    max-width: 300px;
+    color: var(--sidebar-text);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* Etapas da autenticação */
+
+.auth-progresso {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 360px;
+    padding: 24px;
+    border: 1px solid var(--sidebar-line);
+    border-radius: 12px;
+    background-color: var(--sidebar-hover);
+}
+
+.auth-etapa {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    align-items: center;
+    row-gap: 4px;
+    column-gap: 12px;
+}
+
+.auth-etapa>span:first-child {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    padding: 8px;
+    border-radius: 8px;
+    color: var(--page-bg);
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.auth-ativo {
+    background-color: var(--primary);
+}
+
+.auth-pendente {
+    background-color: var(--sidebar-active);
+}
+
+.auth-concluido {
+    background-color: green;
+}
+
+.auth-etapa-titulo {
+    grid-column: 2;
+    color: var(--page-bg);
+    font-weight: 500;
+}
+
+.auth-etapa p {
+    grid-column: 2;
+}
+
+
+/* Conteúdo principal */
+
+.auth-conteudo {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex: 1;
+    padding: 48px 5%;
+    background-color: var(--page-bg);
+    color: var(--main-text);
+}
+
+.auth-corpo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    width: 100%;
+}
+
+
+/* 5. Cabeçalho */
+
+.auth-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.auth-cabecalho>span:first-child {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted-text);
+}
+
+.auth-cabecalho>span:last-child {
+    padding: 8px;
+    background-color: var(--border);
+    color: var(--secondary-text);
+    border-radius: 24px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+
+/* Apresentação */
+
+.auth-apresentacao {
+    margin-bottom: 36px;
+}
+
+.auth-apresentacao h2 {
+    margin-bottom: 12px;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--main-text);
+}
+
+.auth-apresentacao p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--secondary-text);
+}
+
+.auth-apresentacao,
+#form-login {
+    width: 100%;
+    max-width: 340px;
+    align-self: center;
+}
+
+.auth-apresentacao-totp {
+    width: 100%;
+    max-width: 420px;
+    align-self: center;
+    margin-bottom: 36px;
+}
+
+.auth-apresentacao-totp h2 {
+    margin-bottom: 12px;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--main-text);
+}
+
+.auth-apresentacao-totp p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--secondary-text);
+}
+
+/* Formulários e campos */
+
+#form-login,
+#form-totp {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.auth-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.auth-campo label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--main-text);
+}
+
+.auth-campo input {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+    background-color: var(--soft-bg);
+    color: var(--main-text);
+    font-family: var(--font);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auth-campo input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* Campo de código TOTP */
+
+.auth-campo-totp {
+    width: 100%;
+}
+
+.totp-input-container {
+    position: relative;
+    width: 100%;
+}
+
+.totp-input-container input {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: text;
+}
+
+.totp-quadradinhos {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    width: 100%;
+}
+
+.totp-quadradinhos span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+    background-color: var(--soft-bg);
+    color: var(--main-text);
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.totp-quadradinhos span.totp-atual {
+    border-color: var(--primary);
+    background-color: var(--page-bg);
+    box-shadow: 0 0 2px var(--primary);
+}
+
+
+/* Senha */
+
+.auth-senha-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.auth-senha-container input {
+    padding-right: 48px;
+}
+
+#btn-mostrar-senha {
+    position: absolute;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: var(--muted-text);
+    cursor: pointer;
+}
+
+
+/* Botões */
+
+#btn-continuar {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--radius-small);
+    background-color: var(--primary);
+    color: #ffffff;
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#btn-continuar:hover {
+    background-color: var(--primary-hover);
+}
+
+
+/* Avisos e segurança */
+
+.auth-aviso {
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted-text);
+    text-align: center;
+}
+
+.auth-conteudo hr {
+    width: 50%;
+    margin: 32px;
+    border: none;
+    border-top: 1px solid var(--border);
+}
+
+.auth-info-seguranca {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--muted-text);
+}
+
+
+/* Rodapé */
+
+.auth-rodape {
+    margin-top: 40px;
+    font-size: 12px;
+    color: var(--muted-text);
+    text-align: center;
+}
+
 /* responsividade */
 
 @media (max-width: 1100px) {
@@ -1031,6 +1471,53 @@ tbody td:first-child {
         grid-template-columns: 1fr;
     }
 }
+
+#area-autenticacao {
+    grid-template-columns: 32% 68%;
+}
+
+.auth-sidebar {
+    padding: 36px 28px;
+}
+
+.auth-conteudo {
+    padding: 40px 32px;
+}
+
+.auth-apresentacao h2,
+.auth-apresentacao-totp h2 {
+    font-size: 40px;
+}
+
+.auth-apresentacao p,
+.auth-apresentacao-totp p {
+    font-size: 18px;
+}
+
+.auth-campo label {
+    font-size: 17px;
+}
+
+.auth-campo input {
+    font-size: 18px;
+}
+
+#btn-continuar {
+    font-size: 18px;
+}
+
+#form-totp .auth-campo label {
+    font-size: 17px;
+}
+
+#form-totp #btn-continuar {
+    font-size: 18px;
+}
+
+#form-totp button {
+    padding: 16px 24px;
+}
+
 
 @media (max-width: 800px) {
     .sidebar {
@@ -1062,6 +1549,24 @@ tbody td:first-child {
     .dashboard-charts,
     .dashboard-bottom {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    #area-autenticacao {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-sidebar {
+        gap: 0;
+        padding: 20px 24px;
+    }
+
+    .auth-sidebar-corpo,
+    .auth-progresso {
+        display: none;
+    }
+
+    .auth-conteudo {
+        padding: 32px 24px;
     }
 }
 
@@ -1161,5 +1666,20 @@ tbody td:first-child {
 
     .modal-header {
         gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .totp-quadradinhos {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 6px;
+    }
+
+    .totp-quadradinhos span {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+        min-width: 0;
+        font-size: clamp(18px, 6vw, 24px);
     }
 }

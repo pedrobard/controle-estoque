@@ -1,6 +1,6 @@
 import { formatadorMoeda, formatarQuantidade } from "./utilitarios.js";
 import { categorias } from "./categorias.js";
-import { apiUrl } from "./api.js";
+import { apiFetch } from "./api.js";
 
 
 const form = document.querySelector("#form-cadastrar-produto");
@@ -30,7 +30,7 @@ let filtroEstoqueBaixoAtivo = false;
 
 export async function carregarProdutos() {
     try {
-        const resposta = await fetch(apiUrl("/produtos"));
+        const resposta = await apiFetch("/produtos");
 
         const dados = await resposta.json();
 
@@ -110,7 +110,7 @@ async function cadastrarProduto() {
             return;
         }
         try {
-            const resposta = await fetch(apiUrl("/produtos"), {
+            const resposta = await apiFetch("/produtos", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -140,7 +140,7 @@ async function cadastrarProduto() {
             }
 
 
-    
+
 
         } catch (erro) {
             console.error(erro);
@@ -170,7 +170,7 @@ async function cadastrarProduto() {
         }
 
         try {
-            const resposta = await fetch(apiUrl(`/produtos/${idEditando}`), {
+            const resposta = await apiFetch(`/produtos/${idEditando}`, {
                 method: "PATCH",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({ nome, idCategoria, preco, estoqueMinimo })
@@ -239,7 +239,7 @@ async function removerProduto(id) {
     }
 
     try {
-        const resposta = await fetch(apiUrl(`/produtos/${id}`), {
+        const resposta = await apiFetch(`/produtos/${id}`, {
             method: "DELETE"
         });
 
@@ -289,7 +289,7 @@ async function alterarStatusProduto(id) {
             }
         }
 
-        const resposta = await fetch(apiUrl(`/produtos/${id}/status`), {
+        const resposta = await apiFetch(`/produtos/${id}/status`, {
             method: "PATCH",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({
@@ -446,7 +446,12 @@ function renderizarProduto(lista = produtos) {
 
         // Valor total do estoque
         const tdValorEstoque = document.createElement("td");
-        tdValorEstoque.textContent = formatadorMoeda(produto.quantidade * produto.custoMedio);
+        tdValorEstoque.textContent = new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(produto.quantidade * produto.custoMedio);
         tr.appendChild(tdValorEstoque);
 
         // Preço de venda padrão

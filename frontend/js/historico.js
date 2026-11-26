@@ -1,6 +1,6 @@
 import { formatadorMoeda, formatarData, formatarQuantidade } from "./utilitarios.js";
 import { produtos } from "./produtos.js";
-import { apiUrl } from "./api.js";
+import { apiFetch } from "./api.js";
 
 const listaHistorico = document.querySelector("#lista-historico");
 const selectTipoHistorico = document.querySelector("#select-tipo-historico");
@@ -15,7 +15,7 @@ export let movimentacoes = [];
 
 export async function carregarMovimentacoes() {
     try {
-        const resposta = await fetch(apiUrl("/movimentacoes"));
+        const resposta = await apiFetch("/movimentacoes");
         const dados = await resposta.json();
 
         if (!resposta.ok) {
@@ -520,7 +520,7 @@ async function estornarMovimentacao(id) {
     }
 
     try {
-        const resposta = await fetch(apiUrl(`/movimentacoes/${id}/estorno`), {
+        const resposta = await apiFetch(`/movimentacoes/${id}/estorno`, {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ motivo: motivo.trim() })

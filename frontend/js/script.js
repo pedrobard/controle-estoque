@@ -3,7 +3,7 @@ import { carregarCategorias } from "./categorias.js";
 import { carregarMovimentacoes } from "./historico.js";
 import { atualizarSelectProdutos } from "./movimentacoes.js";
 import { calcularResumo, atualizarGraficoMovimentacoes, renderizarEstoqueBaixo, atualizarGraficoRosca, renderizarMovimentacoesRecentes } from "./dashboard.js";
-
+import { verificarSessao } from "./auth.js";
 
 
 //evento para atualizar as interfaces da categoria. evento no categorias.js. evitar dependencia ciclica
@@ -71,10 +71,17 @@ document.addEventListener("produtos-atualizados", async () => {
     }
 });
 
+// Iniciar o sistema somente após a autenticação ser concluída.
+document.addEventListener("autenticacao-concluida", iniciarApp);
+
+// Verificar se já existe uma sessão autenticada no backend.
+verificarSessao();
+
+
 
 function navegarPagina() {
     const secoes = document.querySelectorAll(".section");
-    
+
     const linksNavegacao = document.querySelectorAll(".nav-item");
 
     const paginaSolicitada = window.location.hash;
@@ -152,7 +159,3 @@ async function iniciarApp() {
 
 
 }
-
-
-// Início
-iniciarApp();
