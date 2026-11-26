@@ -5,8 +5,10 @@ import ajustesEstoqueRoutes from "./routes/ajustes-estoque.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import tratarErrosJson from "./middlewares/tratar-erros-json.js";
 
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import express from "express";
-import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -18,11 +20,16 @@ import pool from "./db.js";
 
 const app = express();
 
+app.set("trust proxy", 1);
+
+const caminhoArquivo = fileURLToPath(import.meta.url);
+const diretorioAtual = path.dirname(caminhoArquivo);
+
+const caminhoFrontend = path.resolve(diretorioAtual, "../frontend");
+
+
 // middlewares
-app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true
-}));
+
 
 app.use(express.json());
 
@@ -62,6 +69,8 @@ app.use("/ajustes-estoque", ajustesEstoqueRoutes);
 
 
 
+// disponibilizar arquivos do frontend
+app.use(express.static(caminhoFrontend));
 
 // tratamento de erros JSON
 app.use(tratarErrosJson);
