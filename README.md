@@ -66,7 +66,6 @@ Embora tenha surgido de uma necessidade pessoal, o sistema foi desenvolvido para
 - otplib
 - qrcode
 - express-rate-limit
-- cors
 
 ## Organização do projeto
 
@@ -191,8 +190,6 @@ Os scripts SQL estão organizados em:
 
 - Node.js 18 ou superior
 - PostgreSQL
-- Visual Studio Code
-- Extensão Live Server (VS Code)
 
 ### 1. Configurar o banco de dados
 
@@ -244,17 +241,17 @@ Durante a execução, o script solicitará os dados necessários para cadastrar 
 
 Guarde essas credenciais com segurança, pois elas serão utilizadas para acessar o sistema.
 
-### 5. Iniciar o backend
+### 5. Iniciar a aplicação
 
-Ainda na pasta `backend`, execute:
+Na pasta `backend`, execute:
 
 ```bash
 npm start
 ```
 
-### 6. Abrir o frontend
+Após iniciar o servidor, acesse a aplicação pelo navegador:
 
-Abra a pasta `frontend` no Visual Studio Code e utilize a extensão Live Server para iniciar a aplicação.
+http://localhost:3000
 
 ## Documentação complementar
 
